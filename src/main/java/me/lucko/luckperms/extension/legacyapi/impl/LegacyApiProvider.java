@@ -17,6 +17,7 @@ import me.lucko.luckperms.api.metastacking.MetaStackFactory;
 import me.lucko.luckperms.api.platform.PlatformInfo;
 import me.lucko.luckperms.extension.legacyapi.impl.actionlogger.ActionLoggerProxy;
 import me.lucko.luckperms.extension.legacyapi.impl.contextset.ContextManagerProxy;
+import me.lucko.luckperms.extension.legacyapi.impl.event.EventBusProxy;
 import me.lucko.luckperms.extension.legacyapi.impl.messaging.MessagingServiceProxy;
 import me.lucko.luckperms.extension.legacyapi.impl.metastack.MetaStackFactoryProxy;
 import me.lucko.luckperms.extension.legacyapi.impl.misc.DummyUuidCache;
@@ -35,9 +36,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class LegacyApiProvider implements LuckPermsApi {
     private final LuckPerms luckPerms;
+    private final EventBusProxy eventBusProxy;
 
     public LegacyApiProvider(LuckPerms luckPerms) {
         this.luckPerms = luckPerms;
+        this.eventBusProxy = new EventBusProxy(this, luckPerms);
     }
 
     @Override
@@ -67,7 +70,7 @@ public class LegacyApiProvider implements LuckPermsApi {
 
     @Override
     public EventBus getEventBus() {
-        throw new UnsupportedOperationException("listening to events is not supported by the legacy api bridge"); // todo support this?
+        return this.eventBusProxy;
     }
 
     @Override
