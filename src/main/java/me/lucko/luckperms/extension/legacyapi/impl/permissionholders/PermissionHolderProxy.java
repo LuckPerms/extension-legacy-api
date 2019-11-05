@@ -60,7 +60,7 @@ public class PermissionHolderProxy implements PermissionHolder {
 
     @Override
     public @NonNull CompletableFuture<Void> refreshCachedData() {
-        return this.permissionHolder.refreshCachedData();
+        return CompletableFuture.runAsync(() -> this.permissionHolder.getCachedData().invalidate());
     }
 
     @Override

@@ -42,7 +42,7 @@ public class UserProxy extends PermissionHolderProxy implements User {
 
     @Override
     public void refreshPermissions() {
-        this.user.refreshCachedData();
+        refreshCachedData();
     }
 
     @Override

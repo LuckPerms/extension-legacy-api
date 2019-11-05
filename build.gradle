@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
     id 'java'
 }
 
@@ -23,8 +24,16 @@ dependencies {
     compileOnly 'com.google.guava:guava:19.0'
 
     compile 'me.lucko.luckperms:luckperms-api:4.4'
-    compile 'net.luckperms:api:5.0'
+    compileOnly 'net.luckperms:api:5.0'
 
     compileOnly 'org.spigotmc:spigot-api:1.14-R0.1-SNAPSHOT'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
+}
+
+shadowJar {
+    getArchiveClassifier().set(null)
+}
+
+artifacts {
+    archives shadowJar
 }

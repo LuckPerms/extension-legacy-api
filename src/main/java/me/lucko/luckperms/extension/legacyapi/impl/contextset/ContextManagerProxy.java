@@ -7,6 +7,7 @@ import me.lucko.luckperms.api.context.ContextManager;
 import me.lucko.luckperms.api.context.ImmutableContextSet;
 import me.lucko.luckperms.api.context.StaticContextCalculator;
 import me.lucko.luckperms.extension.legacyapi.impl.permissionholders.UserProxy;
+import net.luckperms.api.query.QueryOptions;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.IdentityHashMap;
@@ -34,12 +35,12 @@ public class ContextManagerProxy implements ContextManager {
 
     @Override
     public @NonNull Optional<ImmutableContextSet> lookupApplicableContext(@NonNull User user) {
-        return this.contextManager.lookupContext(((UserProxy) user).getUnderlyingUser()).map(ContextSetProxyUtil::legacyImmutable);
+        return this.contextManager.getContext(((UserProxy) user).getUnderlyingUser()).map(ContextSetProxyUtil::legacyImmutable);
     }
 
     @Override
     public @NonNull Optional<Contexts> lookupApplicableContexts(@NonNull User user) {
-        return this.contextManager.lookupQueryOptions(((UserProxy) user).getUnderlyingUser()).map(ContextsProxyUtil::legacyContexts);
+        return this.contextManager.getQueryOptions(((UserProxy) user).getUnderlyingUser()).map(ContextsProxyUtil::legacyContexts);
     }
 
     @Override
@@ -54,12 +55,14 @@ public class ContextManagerProxy implements ContextManager {
 
     @Override
     public @NonNull Contexts formContexts(@NonNull Object subject, @NonNull ImmutableContextSet contextSet) {
-        return ContextsProxyUtil.legacyContexts(this.contextManager.formQueryOptions(subject, ContextSetProxyUtil.modernImmutable(contextSet)));
+        QueryOptions options = this.contextManager.getQueryOptions(subject).toBuilder().context(ContextSetProxyUtil.modernImmutable(contextSet)).build();
+        return ContextsProxyUtil.legacyContexts(options);
     }
 
     @Override
     public @NonNull Contexts formContexts(@NonNull ImmutableContextSet contextSet) {
-        return ContextsProxyUtil.legacyContexts(this.contextManager.formQueryOptions(ContextSetProxyUtil.modernImmutable(contextSet)));
+        QueryOptions options = this.contextManager.getStaticQueryOptions().toBuilder().context(ContextSetProxyUtil.modernImmutable(contextSet)).build();
+        return ContextsProxyUtil.legacyContexts(options);
     }
 
     @Override
