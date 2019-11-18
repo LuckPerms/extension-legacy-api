@@ -330,6 +330,6 @@ public class NodeProxy implements LocalizedNode {
         if (!origin.isPresent()) {
             throw new IllegalStateException("location information not present");
         }
-        return origin.get().getOrigin();
+        return origin.get().getOrigin().getName();
     }
 }
