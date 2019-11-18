@@ -65,7 +65,7 @@ public class PermissionHolderProxy implements PermissionHolder {
 
     @Override
     public @NonNull ImmutableSetMultimap<ImmutableContextSet, Node> getNodes() {
-        return ImmutableSetMultimap.copyOf(this.permissionHolder.data().getNodes().entrySet().stream()
+        return ImmutableSetMultimap.copyOf(this.permissionHolder.data().toMap().entrySet().stream()
                 .flatMap(pair -> {
                     ImmutableContextSet contextSet = ContextSetProxyUtil.legacyImmutable(pair.getKey());
                     return pair.getValue().stream().map(node -> Maps.<ImmutableContextSet, Node>immutableEntry(contextSet, new NodeProxy(node)));
@@ -75,7 +75,7 @@ public class PermissionHolderProxy implements PermissionHolder {
 
     @Override
     public @NonNull ImmutableSetMultimap<ImmutableContextSet, Node> getTransientNodes() {
-        return ImmutableSetMultimap.copyOf(this.permissionHolder.transientData().getNodes().entrySet().stream()
+        return ImmutableSetMultimap.copyOf(this.permissionHolder.transientData().toMap().entrySet().stream()
                 .flatMap(pair -> {
                     ImmutableContextSet contextSet = ContextSetProxyUtil.legacyImmutable(pair.getKey());
                     return pair.getValue().stream().map(node -> Maps.<ImmutableContextSet, Node>immutableEntry(contextSet, new NodeProxy(node)));
@@ -95,12 +95,12 @@ public class PermissionHolderProxy implements PermissionHolder {
 
     @Override
     public @NonNull Set<? extends Node> getEnduringPermissions() {
-        return this.permissionHolder.data().getFlattenedNodes().stream().map(NodeProxy::new).collect(Collectors.toSet());
+        return this.permissionHolder.data().toSet().stream().map(NodeProxy::new).collect(Collectors.toSet());
     }
 
     @Override
     public @NonNull Set<? extends Node> getTransientPermissions() {
-        return this.permissionHolder.transientData().getFlattenedNodes().stream().map(NodeProxy::new).collect(Collectors.toSet());
+        return this.permissionHolder.transientData().toSet().stream().map(NodeProxy::new).collect(Collectors.toSet());
     }
 
     @Override
@@ -161,7 +161,7 @@ public class PermissionHolderProxy implements PermissionHolder {
 
     @Override
     public @NonNull Tristate hasPermission(@NonNull Node node, @NonNull NodeEqualityPredicate equalityPredicate) {
-        return this.permissionHolder.data().getFlattenedNodes().stream()
+        return this.permissionHolder.data().toSet().stream()
                 .filter(n -> node.equals(node, equalityPredicate))
                 .findFirst()
                 .map(n -> Tristate.fromBoolean(n.getValue()))
@@ -170,7 +170,7 @@ public class PermissionHolderProxy implements PermissionHolder {
 
     @Override
     public @NonNull Tristate hasTransientPermission(@NonNull Node node, @NonNull NodeEqualityPredicate equalityPredicate) {
-        return this.permissionHolder.transientData().getFlattenedNodes().stream()
+        return this.permissionHolder.transientData().toSet().stream()
                 .filter(n -> node.equals(node, equalityPredicate))
                 .findFirst()
                 .map(n -> Tristate.fromBoolean(n.getValue()))
@@ -221,76 +221,76 @@ public class PermissionHolderProxy implements PermissionHolder {
 
     @Override
     public @NonNull DataMutateResult setPermission(@NonNull Node node) {
-        return DataMutateResultProxyUtil.legacy(this.permissionHolder.data().addNode(((NodeProxy) node).getUnderlyingNode()));
+        return DataMutateResultProxyUtil.legacy(this.permissionHolder.data().add(((NodeProxy) node).getUnderlyingNode()));
     }
 
     @Override
     public @NonNull TemporaryDataMutateResult setPermission(@NonNull Node node, @NonNull TemporaryMergeBehaviour temporaryMergeBehaviour) {
-        return new TemporaryDataMutateResultProxy(this.permissionHolder.data().addNode(((NodeProxy) node).getUnderlyingNode(), TemporaryMergeBehaviourProxyUtil.modern(temporaryMergeBehaviour)));
+        return new TemporaryDataMutateResultProxy(this.permissionHolder.data().add(((NodeProxy) node).getUnderlyingNode(), TemporaryMergeBehaviourProxyUtil.modern(temporaryMergeBehaviour)));
     }
 
     @Override
     public @NonNull DataMutateResult setTransientPermission(@NonNull Node node) {
-        return DataMutateResultProxyUtil.legacy(this.permissionHolder.transientData().addNode(((NodeProxy) node).getUnderlyingNode()));
+        return DataMutateResultProxyUtil.legacy(this.permissionHolder.transientData().add(((NodeProxy) node).getUnderlyingNode()));
     }
 
     @Override
     public @NonNull TemporaryDataMutateResult setTransientPermission(@NonNull Node node, @NonNull TemporaryMergeBehaviour temporaryMergeBehaviour) {
-        return new TemporaryDataMutateResultProxy(this.permissionHolder.transientData().addNode(((NodeProxy) node).getUnderlyingNode(), TemporaryMergeBehaviourProxyUtil.modern(temporaryMergeBehaviour)));
+        return new TemporaryDataMutateResultProxy(this.permissionHolder.transientData().add(((NodeProxy) node).getUnderlyingNode(), TemporaryMergeBehaviourProxyUtil.modern(temporaryMergeBehaviour)));
     }
 
     @Override
     public @NonNull DataMutateResult unsetPermission(@NonNull Node node) {
-        return DataMutateResultProxyUtil.legacy(this.permissionHolder.data().removeNode(((NodeProxy) node).getUnderlyingNode()));
+        return DataMutateResultProxyUtil.legacy(this.permissionHolder.data().remove(((NodeProxy) node).getUnderlyingNode()));
     }
 
     @Override
     public @NonNull DataMutateResult unsetTransientPermission(@NonNull Node node) {
-        return DataMutateResultProxyUtil.legacy(this.permissionHolder.transientData().removeNode(((NodeProxy) node).getUnderlyingNode()));
+        return DataMutateResultProxyUtil.legacy(this.permissionHolder.transientData().remove(((NodeProxy) node).getUnderlyingNode()));
     }
 
     @Override
     public void clearMatching(@NonNull Predicate<Node> test) {
-        this.permissionHolder.data().clearMatching(node -> test.test(new NodeProxy(node)));
+        this.permissionHolder.data().clear(node -> test.test(new NodeProxy(node)));
     }
 
     @Override
     public void clearMatchingTransient(@NonNull Predicate<Node> test) {
-        this.permissionHolder.transientData().clearMatching(node -> test.test(new NodeProxy(node)));
+        this.permissionHolder.transientData().clear(node -> test.test(new NodeProxy(node)));
     }
 
     @Override
     public void clearNodes() {
-        this.permissionHolder.data().clearNodes();
+        this.permissionHolder.data().clear();
     }
 
     @Override
     public void clearNodes(@NonNull ContextSet contextSet) {
-        this.permissionHolder.data().clearNodes(ContextSetProxyUtil.modernImmutable(contextSet));
+        this.permissionHolder.data().clear(ContextSetProxyUtil.modernImmutable(contextSet));
     }
 
     @Override
     public void clearParents() {
-        this.permissionHolder.data().clearParents();
+        this.permissionHolder.data().clear(NodeType.INHERITANCE::matches);
     }
 
     @Override
     public void clearParents(@NonNull ContextSet contextSet) {
-        this.permissionHolder.data().clearParents(ContextSetProxyUtil.modernImmutable(contextSet));
+        this.permissionHolder.data().clear(ContextSetProxyUtil.modernImmutable(contextSet), NodeType.INHERITANCE::matches);
     }
 
     @Override
     public void clearMeta() {
-        this.permissionHolder.data().clearMeta();
+        this.permissionHolder.data().clear(NodeType.META_OR_CHAT_META::matches);
     }
 
     @Override
     public void clearMeta(@NonNull ContextSet contextSet) {
-        this.permissionHolder.data().clearMeta(ContextSetProxyUtil.modernImmutable(contextSet));
+        this.permissionHolder.data().clear(ContextSetProxyUtil.modernImmutable(contextSet), NodeType.META_OR_CHAT_META::matches);
     }
 
     @Override
     public void clearTransientNodes() {
-        this.permissionHolder.transientData().clearNodes();
+        this.permissionHolder.transientData().clear();
     }
 }

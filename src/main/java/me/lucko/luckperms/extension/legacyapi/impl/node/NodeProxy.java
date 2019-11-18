@@ -1,5 +1,6 @@
 package me.lucko.luckperms.extension.legacyapi.impl.node;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import me.lucko.luckperms.api.LocalizedNode;
 import me.lucko.luckperms.api.Node;
@@ -31,6 +32,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +103,8 @@ public class NodeProxy implements LocalizedNode {
 
     @Override
     public @NonNull List<String> resolveShorthand() {
-        return this.node.resolveShorthand();
+        Collection<String> shorthand = this.node.resolveShorthand();
+        return shorthand instanceof List<?> ? ((List<String>) shorthand) : ImmutableList.copyOf(shorthand);
     }
 
     @Override

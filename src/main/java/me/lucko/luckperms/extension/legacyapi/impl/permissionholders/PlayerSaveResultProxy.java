@@ -22,7 +22,7 @@ public class PlayerSaveResultProxy implements PlayerSaveResult {
 
     @Override
     public @Nullable String getOldUsername() {
-        return this.playerSaveResult.getOldUsername();
+        return this.playerSaveResult.getPreviousUsername();
     }
 
     @Override
