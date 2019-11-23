@@ -39,7 +39,7 @@ public class TrackProxy implements Track {
 
     @Override
     public int getSize() {
-        return this.track.getSize();
+        return this.track.getGroups().size();
     }
 
     @Override

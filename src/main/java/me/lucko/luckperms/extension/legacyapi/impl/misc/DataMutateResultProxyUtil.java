@@ -1,6 +1,6 @@
 package me.lucko.luckperms.extension.legacyapi.impl.misc;
 
-import net.luckperms.api.model.DataMutateResult;
+import net.luckperms.api.model.data.DataMutateResult;
 
 public enum DataMutateResultProxyUtil {
     ;
@@ -12,9 +12,9 @@ public enum DataMutateResultProxyUtil {
             case FAIL:
                 return DataMutateResult.FAIL;
             case LACKS:
-                return DataMutateResult.LACKS;
+                return DataMutateResult.FAIL_LACKS;
             case ALREADY_HAS:
-                return DataMutateResult.ALREADY_HAS;
+                return DataMutateResult.FAIL_ALREADY_HAS;
             default:
                 throw new AssertionError();
         }
@@ -26,9 +26,9 @@ public enum DataMutateResultProxyUtil {
                 return me.lucko.luckperms.api.DataMutateResult.SUCCESS;
             case FAIL:
                 return me.lucko.luckperms.api.DataMutateResult.FAIL;
-            case LACKS:
+            case FAIL_LACKS:
                 return me.lucko.luckperms.api.DataMutateResult.LACKS;
-            case ALREADY_HAS:
+            case FAIL_ALREADY_HAS:
                 return me.lucko.luckperms.api.DataMutateResult.ALREADY_HAS;
             default:
                 throw new AssertionError();

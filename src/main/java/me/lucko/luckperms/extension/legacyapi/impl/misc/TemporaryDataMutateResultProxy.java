@@ -7,9 +7,9 @@ import me.lucko.luckperms.extension.legacyapi.impl.node.NodeProxy;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class TemporaryDataMutateResultProxy implements TemporaryDataMutateResult {
-    private final net.luckperms.api.model.TemporaryDataMutateResult result;
+    private final net.luckperms.api.model.data.DataMutateResult.WithMergedNode result;
 
-    public TemporaryDataMutateResultProxy(net.luckperms.api.model.TemporaryDataMutateResult result) {
+    public TemporaryDataMutateResultProxy(net.luckperms.api.model.data.DataMutateResult.WithMergedNode result) {
         this.result = result;
     }
 

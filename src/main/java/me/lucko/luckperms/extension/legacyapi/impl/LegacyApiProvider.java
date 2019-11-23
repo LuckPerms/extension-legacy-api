@@ -111,7 +111,7 @@ public class LegacyApiProvider implements LuckPermsApi {
 
     @Override
     public Collection<String> getKnownPermissions() {
-        return this.luckPerms.getKnownPermissions();
+        return this.luckPerms.getPlatform().getKnownPermissions();
     }
 
     @Override

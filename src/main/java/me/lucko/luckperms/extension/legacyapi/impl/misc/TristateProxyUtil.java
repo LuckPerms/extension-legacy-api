@@ -1,6 +1,6 @@
 package me.lucko.luckperms.extension.legacyapi.impl.misc;
 
-import net.luckperms.api.node.Tristate;
+import net.luckperms.api.util.Tristate;
 
 public enum TristateProxyUtil {
     ;
