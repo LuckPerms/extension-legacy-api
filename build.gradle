@@ -14,7 +14,7 @@ tasks.withType(JavaCompile) {
 
 repositories {
     mavenCentral()
-    mavenLocal()
+    //mavenLocal()
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url 'https://repo.spongepowered.org/maven' }
 }
