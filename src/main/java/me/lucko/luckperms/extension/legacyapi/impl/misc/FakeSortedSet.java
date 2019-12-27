@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.SortedSet;
+import java.util.Spliterator;
 
 public class FakeSortedSet<E> extends ForwardingCollection<E> implements SortedSet<E> {
 
@@ -65,4 +66,9 @@ public class FakeSortedSet<E> extends ForwardingCollection<E> implements SortedS
         return item;
     }
 
+    @Override
+    public Spliterator<E> spliterator() {
+        // override the spliterator() impl provided as default in SortedSet
+        return this.backing.spliterator();
+    }
 }
