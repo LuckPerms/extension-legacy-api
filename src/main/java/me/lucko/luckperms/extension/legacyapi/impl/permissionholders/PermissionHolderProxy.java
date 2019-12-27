@@ -3,7 +3,6 @@ package me.lucko.luckperms.extension.legacyapi.impl.permissionholders;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import me.lucko.luckperms.api.Contexts;
 import me.lucko.luckperms.api.DataMutateResult;
 import me.lucko.luckperms.api.Group;
@@ -67,22 +66,22 @@ public class PermissionHolderProxy implements PermissionHolder {
 
     @Override
     public @NonNull ImmutableSetMultimap<ImmutableContextSet, Node> getNodes() {
-        return ImmutableSetMultimap.copyOf(this.permissionHolder.data().toMap().entrySet().stream()
-                .flatMap(pair -> {
-                    ImmutableContextSet contextSet = ContextSetProxyUtil.legacyImmutable(pair.getKey());
-                    return pair.getValue().stream().map(node -> Maps.<ImmutableContextSet, Node>immutableEntry(contextSet, new NodeProxy(node)));
-                })
-                .collect(Collectors.toList()));
+        ImmutableSetMultimap.Builder<ImmutableContextSet, Node> builder = ImmutableSetMultimap.builder();
+        this.permissionHolder.data().toMap().forEach((legacyContextSet, nodes) -> {
+            ImmutableContextSet contextSet = ContextSetProxyUtil.legacyImmutable(legacyContextSet);
+            nodes.forEach(node -> builder.put(contextSet, new NodeProxy(node)));
+        });
+        return builder.build();
     }
 
     @Override
     public @NonNull ImmutableSetMultimap<ImmutableContextSet, Node> getTransientNodes() {
-        return ImmutableSetMultimap.copyOf(this.permissionHolder.transientData().toMap().entrySet().stream()
-                .flatMap(pair -> {
-                    ImmutableContextSet contextSet = ContextSetProxyUtil.legacyImmutable(pair.getKey());
-                    return pair.getValue().stream().map(node -> Maps.<ImmutableContextSet, Node>immutableEntry(contextSet, new NodeProxy(node)));
-                })
-                .collect(Collectors.toList()));
+        ImmutableSetMultimap.Builder<ImmutableContextSet, Node> builder = ImmutableSetMultimap.builder();
+        this.permissionHolder.transientData().toMap().forEach((legacyContextSet, nodes) -> {
+            ImmutableContextSet contextSet = ContextSetProxyUtil.legacyImmutable(legacyContextSet);
+            nodes.forEach(node -> builder.put(contextSet, new NodeProxy(node)));
+        });
+        return builder.build();
     }
 
     @Override
