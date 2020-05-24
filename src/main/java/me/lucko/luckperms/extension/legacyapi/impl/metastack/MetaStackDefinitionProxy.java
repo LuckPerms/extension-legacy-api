@@ -1,9 +1,11 @@
 package me.lucko.luckperms.extension.legacyapi.impl.metastack;
 
 import com.google.common.collect.Lists;
+
 import me.lucko.luckperms.api.metastacking.DuplicateRemovalFunction;
 import me.lucko.luckperms.api.metastacking.MetaStackDefinition;
 import me.lucko.luckperms.api.metastacking.MetaStackElement;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class MetaStackDefinitionProxy implements MetaStackDefinition {
 
     @Override
     public @NonNull List<MetaStackElement> getElements() {
-        return Lists.transform(this.definition.getElements(), LegacyMetaStackElementProxy::new);
+        return Lists.transform(this.definition.getElements(), MetaStackElementProxyUtil::legacyElement);
     }
 
     @Override

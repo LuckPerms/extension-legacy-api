@@ -21,6 +21,10 @@ public class ModernMetaStackElementProxy implements MetaStackElement {
         this.element = element;
     }
 
+    public me.lucko.luckperms.api.metastacking.MetaStackElement getUnderlyingElement() {
+        return this.element;
+    }
+
     @Override
     public boolean shouldAccumulate(@NonNull ChatMetaType type, @NonNull ChatMetaNode<?, ?> node, @Nullable ChatMetaNode<?, ?> current) {
         Map.Entry<Integer, String> currentEntry = current == null ? null : Maps.immutableEntry(current.getPriority(), current.getMetaValue());
