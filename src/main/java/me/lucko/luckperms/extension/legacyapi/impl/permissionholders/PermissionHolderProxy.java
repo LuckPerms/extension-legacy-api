@@ -3,6 +3,7 @@ package me.lucko.luckperms.extension.legacyapi.impl.permissionholders;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Lists;
+
 import me.lucko.luckperms.api.Contexts;
 import me.lucko.luckperms.api.DataMutateResult;
 import me.lucko.luckperms.api.Group;
@@ -22,9 +23,12 @@ import me.lucko.luckperms.extension.legacyapi.impl.contextset.ContextsProxyUtil;
 import me.lucko.luckperms.extension.legacyapi.impl.misc.DataMutateResultProxyUtil;
 import me.lucko.luckperms.extension.legacyapi.impl.misc.FakeSortedSet;
 import me.lucko.luckperms.extension.legacyapi.impl.misc.TemporaryDataMutateResultProxy;
+import me.lucko.luckperms.extension.legacyapi.impl.misc.TristateProxyUtil;
 import me.lucko.luckperms.extension.legacyapi.impl.node.NodeProxy;
+
 import net.luckperms.api.node.NodeType;
 import net.luckperms.api.query.QueryOptions;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Collection;
@@ -162,26 +166,27 @@ public class PermissionHolderProxy implements PermissionHolder {
 
     @Override
     public @NonNull Tristate hasPermission(@NonNull Node node, @NonNull NodeEqualityPredicate equalityPredicate) {
-        return this.permissionHolder.data().toCollection().stream()
-                .filter(n -> node.equals(node, equalityPredicate))
-                .findFirst()
-                .map(n -> Tristate.fromBoolean(n.getValue()))
-                .orElse(Tristate.UNDEFINED);
+        return TristateProxyUtil.legacy(this.permissionHolder.data().contains(
+                ((NodeProxy) node).getUnderlyingNode(),
+                NodeProxy.modernNodeEquality(equalityPredicate)
+        ));
     }
 
     @Override
     public @NonNull Tristate hasTransientPermission(@NonNull Node node, @NonNull NodeEqualityPredicate equalityPredicate) {
-        return this.permissionHolder.transientData().toCollection().stream()
-                .filter(n -> node.equals(node, equalityPredicate))
-                .findFirst()
-                .map(n -> Tristate.fromBoolean(n.getValue()))
-                .orElse(Tristate.UNDEFINED);
+        return TristateProxyUtil.legacy(this.permissionHolder.transientData().contains(
+                ((NodeProxy) node).getUnderlyingNode(),
+                NodeProxy.modernNodeEquality(equalityPredicate)
+        ));
     }
 
     @Override
     public @NonNull Tristate inheritsPermission(@NonNull Node node, @NonNull NodeEqualityPredicate equalityPredicate) {
+        net.luckperms.api.node.Node underlyingNode = ((NodeProxy) node).getUnderlyingNode();
+        net.luckperms.api.node.NodeEqualityPredicate predicate = NodeProxy.modernNodeEquality(equalityPredicate);
+
         return this.permissionHolder.resolveInheritedNodes(QueryOptions.nonContextual()).stream()
-                .filter(n -> node.equals(node, equalityPredicate))
+                .filter(n -> underlyingNode.equals(n, predicate))
                 .findFirst()
                 .map(n -> Tristate.fromBoolean(n.getValue()))
                 .orElse(Tristate.UNDEFINED);

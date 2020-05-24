@@ -2,6 +2,7 @@ package me.lucko.luckperms.extension.legacyapi.impl.node;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
+
 import me.lucko.luckperms.api.LocalizedNode;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.StandardNodeEquality;
@@ -16,6 +17,7 @@ import me.lucko.luckperms.api.nodetype.types.RegexType;
 import me.lucko.luckperms.api.nodetype.types.SuffixType;
 import me.lucko.luckperms.api.nodetype.types.WeightType;
 import me.lucko.luckperms.extension.legacyapi.impl.contextset.ContextSetProxyUtil;
+
 import net.luckperms.api.context.DefaultContextKeys;
 import net.luckperms.api.context.MutableContextSet;
 import net.luckperms.api.node.NodeEqualityPredicate;
@@ -28,6 +30,7 @@ import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.node.types.RegexPermissionNode;
 import net.luckperms.api.node.types.SuffixNode;
 import net.luckperms.api.node.types.WeightNode;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.time.Instant;
@@ -281,10 +284,7 @@ public class NodeProxy implements LocalizedNode {
 
     @Override
     public boolean equals(Node other, me.lucko.luckperms.api.NodeEqualityPredicate equalityPredicate) {
-        if (equalityPredicate instanceof StandardNodeEquality) {
-            return this.node.equals(((NodeProxy) other).node, modernNodeEquality((StandardNodeEquality) equalityPredicate));
-        }
-        throw new UnsupportedOperationException("legacy API support is only implemented for the standard equality predicates");
+        return this.node.equals(((NodeProxy) other).node, modernNodeEquality(equalityPredicate));
     }
 
     @Override
@@ -302,7 +302,14 @@ public class NodeProxy implements LocalizedNode {
         return builder;
     }
 
-    private static NodeEqualityPredicate modernNodeEquality(StandardNodeEquality equality) {
+    public static NodeEqualityPredicate modernNodeEquality(me.lucko.luckperms.api.NodeEqualityPredicate equalityPredicate) {
+        if (equalityPredicate instanceof StandardNodeEquality) {
+            return modernNodeEquality((StandardNodeEquality) equalityPredicate);
+        }
+        throw new UnsupportedOperationException("legacy API support is only implemented for the standard equality predicates");
+    }
+
+    public static NodeEqualityPredicate modernNodeEquality(StandardNodeEquality equality) {
         switch (equality) {
             case EXACT:
                 return NodeEqualityPredicate.EXACT;
