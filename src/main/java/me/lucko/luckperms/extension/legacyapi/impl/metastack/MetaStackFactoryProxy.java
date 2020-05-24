@@ -21,18 +21,18 @@ public class MetaStackFactoryProxy implements MetaStackFactory {
 
     @Override
     public @NonNull Optional<MetaStackElement> fromString(@NonNull String definition) {
-        return this.factory.fromString(definition).map(MetaStackElementProxyUtil::legacyElement);
+        return this.factory.fromString(definition).map(MetaStackElementProxyUtil::legacy);
     }
 
     @Override
     public @NonNull List<MetaStackElement> fromStrings(@NonNull List<String> definitions) {
-        return Lists.transform(this.factory.fromStrings(definitions), MetaStackElementProxyUtil::legacyElement);
+        return Lists.transform(this.factory.fromStrings(definitions), MetaStackElementProxyUtil::legacy);
     }
 
     @Override
     public @NonNull MetaStackDefinition createDefinition(@NonNull List<MetaStackElement> elements, @NonNull DuplicateRemovalFunction duplicateRemovalFunction, @NonNull String startSpacer, @NonNull String middleSpacer, @NonNull String endSpacer) {
         return new MetaStackDefinitionProxy(this.factory.createDefinition(
-                Lists.transform(elements, MetaStackElementProxyUtil::modernElement),
+                Lists.transform(elements, MetaStackElementProxyUtil::modern),
                 DuplicateRemovalFunctionProxyUtil.modern(duplicateRemovalFunction),
                 startSpacer, middleSpacer, endSpacer
         ));

@@ -23,7 +23,7 @@ public class MetaStackDefinitionProxy implements MetaStackDefinition {
 
     @Override
     public @NonNull List<MetaStackElement> getElements() {
-        return Lists.transform(this.definition.getElements(), MetaStackElementProxyUtil::legacyElement);
+        return Lists.transform(this.definition.getElements(), MetaStackElementProxyUtil::legacy);
     }
 
     @Override
