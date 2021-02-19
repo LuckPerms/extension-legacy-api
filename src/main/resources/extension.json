@@ -1,1 +1,1 @@
-{"class": "me.lucko.luckperms.extension.legacyapi.LegacyApiExtension"}
+{"class": "me.lucko.luckperms.extension.legacyapi.LegacyApiExtension", "useParentClassLoader": true}
